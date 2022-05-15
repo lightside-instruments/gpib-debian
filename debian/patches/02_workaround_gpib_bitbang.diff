@@ -1,0 +1,15 @@
+--- a/linux-gpib-kernel/drivers/gpib/gpio/gpib_bitbang.c
++++ b/linux-gpib-kernel/drivers/gpib/gpio/gpib_bitbang.c
+@@ -1028,11 +1028,9 @@
+ 
+ static int __init bb_init_module(void)
+ {
+-        int i;
+         gpib_register_driver(&bb_interface, THIS_MODULE);
+-        dbg_printk(1,"module loaded%s",(sn7516x_used)?" with SN7516x driver support":"");
+ 
+-        gpio_direction_output(0, 0); // workaround without this line accessing HP 59306A device does not work
++        dbg_printk(1,"module loaded%s",(sn7516x_used)?" with SN7516x driver support":"");
+         return 0;
+ }
+ 

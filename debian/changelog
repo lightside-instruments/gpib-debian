@@ -1,3 +1,10 @@
+gpib (4.3.4-1lsi1) UNRELEASED; urgency=medium
+
+  * Updated to more revent upstream version of gpib_bitbang.c kernel module
+  * Patch with workaround fixing issue with HP 59306A
+
+ -- Vladimir Vassilev <vladimir@lightside-instruments.com>  Sun, 15 May 2022 23:51:18 +0200
+
 gpib (4.3.4-1) UNRELEASED; urgency=medium
   * New upstream release
   * Bump compat to 10
