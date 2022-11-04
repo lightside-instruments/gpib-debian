@@ -1,6 +1,12 @@
-gpib (4.3.4-1lsi1) UNRELEASED; urgency=medium
+gpib (4.3.5-lsi1) UNRELEASED; urgency=medium
 
-  * Updated to more revent upstream version of gpib_bitbang.c kernel module
+  * New upstream release
+
+ -- Vladimir Vassilev <vladimir@lightside-instruments.com>  Wed, 02 Nov 2022 01:32:32 +0100
+
+gpib (4.3.4-1lsi1) bullseye; urgency=medium
+
+  * Updated to more recent upstream version of gpib_bitbang.c kernel module
   * Patch with workaround fixing issue with HP 59306A
 
  -- Vladimir Vassilev <vladimir@lightside-instruments.com>  Sun, 15 May 2022 23:51:18 +0200
