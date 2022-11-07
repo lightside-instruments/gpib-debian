@@ -1,4 +1,10 @@
-gpib (4.3.5-lsi1) UNRELEASED; urgency=medium
+gpib (4.3.5-lsi2) bullseye; urgency=medium
+
+  * Added board_id paramer and support for gpib4pi-1.1 which has REN mapped to pin 0 instead of pin 27
+
+ --  Vladimir Vassilev <vladimir@lightside-instruments.com>  Sat, 05 Nov 2022 15:46:12 +0000
+
+gpib (4.3.5-lsi1) bullseye; urgency=medium
 
   * New upstream release
 
