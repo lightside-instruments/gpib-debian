@@ -1,3 +1,9 @@
+gpib (4.3.5-lsi3) bullseye; urgency=medium
+
+  * Synced with upstream r2046 2022-11-09 14:03:06 +0100 commit.
+
+ -- Vladimir Vassilev <vladimir@lightside-instruments.com>  Tue, 15 Nov 2022 15:05:26 +0100
+
 gpib (4.3.5-lsi2) bullseye; urgency=medium
 
   * Added board_id paramer and support for gpib4pi-1.1 which has REN mapped to pin 0 instead of pin 27
