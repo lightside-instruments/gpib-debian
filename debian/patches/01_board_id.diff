@@ -1,3 +1,5 @@
+diff --git a/README.txt b/README.txt
+index 12efd41..60cc61e 100644
 --- a/README.txt
 +++ b/README.txt
 @@ -7,12 +7,12 @@ The Linux GPIB Package
@@ -218,7 +220,7 @@ index 7a3e4ee..854b43a 100644
  		if(retval < 0) return retval;
  	}
 diff --git a/linux-gpib-kernel/drivers/gpib/gpio/gpib_bitbang.c b/linux-gpib-kernel/drivers/gpib/gpio/gpib_bitbang.c
-index f1258ca..2f67289 100644
+index f1258ca..45abddf 100644
 --- a/linux-gpib-kernel/drivers/gpib/gpio/gpib_bitbang.c
 +++ b/linux-gpib-kernel/drivers/gpib/gpio/gpib_bitbang.c
 @@ -47,8 +47,8 @@
@@ -418,7 +420,7 @@ index f1258ca..2f67289 100644
  
          bb_private_t *priv = board->private_data;
  
-@@ -402,23 +412,23 @@ int bb_write(gpib_board_t *board, uint8_t *buffer, size_t length,
+@@ -402,23 +412,24 @@ int bb_write(gpib_board_t *board, uint8_t *buffer, size_t length,
          priv->length = length;
  
          SET_DIR_WRITE(priv);
@@ -446,6 +448,7 @@ index f1258ca..2f67289 100644
 +			set_data_lines(buffer[priv->w_cnt++]);         /* put the data on the lines */
 +			if (send_eoi && (priv->w_cnt == length))       /* in case, send EOI */
 +				gpiod_set_value(EOI, 0);
++			UDELAY;
 +			gpiod_set_value(DAV, 0);   /* flag data available */
 +			priv->phase = 1;
 +		}
@@ -455,7 +458,7 @@ index f1258ca..2f67289 100644
  
          /* wait for the interrupt routines finish their work */
  
-@@ -440,13 +450,13 @@ int bb_write(gpib_board_t *board, uint8_t *buffer, size_t length,
+@@ -440,13 +451,13 @@ int bb_write(gpib_board_t *board, uint8_t *buffer, size_t length,
                  retval = -ERESTARTSYS;
          }
  
@@ -476,7 +479,7 @@ index f1258ca..2f67289 100644
  
  write_end:
          *bytes_written = priv->w_cnt;
-@@ -480,22 +490,22 @@ irqreturn_t bb_NRFD_interrupt(int irq, void * arg)
+@@ -480,22 +491,22 @@ irqreturn_t bb_NRFD_interrupt(int irq, void * arg)
                  goto nrfd_exit;  /* idle */
          }
          if (nrfd == 0) {
@@ -489,25 +492,26 @@ index f1258ca..2f67289 100644
          dbg_printk(3,"sending %zu\n", priv->w_cnt);
  
 -	set_data_lines(priv->w_buf[priv->w_cnt++]); // put the data on the lines
-+        set_data_lines(priv->w_buf[priv->w_cnt++]); // put the data on the lines
- 
+-
 -	if ((priv->w_cnt == priv->length) && priv->end) {
 -		dbg_printk(3,"Asserting EOI\n");
 -		gpiod_set_value(EOI, 0); // Assert EIO
 -	}
++        set_data_lines(priv->w_buf[priv->w_cnt++]); // put the data on the lines
+ 
+-	gpiod_set_value(DAV, 0); // Data available
+-	priv->phase = 2;
 +        if ((priv->w_cnt == priv->length) && priv->end) {
 +	        	dbg_printk(3,"Asserting EOI\n");
 +	        	gpiod_set_value(EOI, 0); // Assert EIO
 +        }
- 
--	gpiod_set_value(DAV, 0); // Data available
--	priv->phase = 2;
++        UDELAY;
 +        gpiod_set_value(DAV, 0); // Data available
 +        priv->phase = 2;
  
  nrfd_exit:
          spin_unlock_irqrestore (&priv->rw_lock, flags);
-@@ -527,7 +537,7 @@ irqreturn_t bb_NDAC_interrupt(int irq, void * arg)
+@@ -527,7 +538,7 @@ irqreturn_t bb_NDAC_interrupt(int irq, void * arg)
                  goto ndac_exit;
          }
          if (ndac == 0) {
@@ -516,7 +520,7 @@ index f1258ca..2f67289 100644
                  priv->phase = 5;
                  goto ndac_exit;
          }
-@@ -574,14 +584,28 @@ int bb_command(gpib_board_t *board, uint8_t *buffer,
+@@ -574,14 +585,28 @@ int bb_command(gpib_board_t *board, uint8_t *buffer,
  {
          size_t ret;
          bb_private_t *priv = board->private_data;
@@ -547,7 +551,7 @@ index f1258ca..2f67289 100644
          priv->cmd = 0;
  
          return ret;
-@@ -628,7 +652,7 @@ static char *cmd_string[32] = {
+@@ -628,7 +653,7 @@ static char *cmd_string[32] = {
          "CFE"  // 0x1f
  };
  
@@ -556,7 +560,7 @@ index f1258ca..2f67289 100644
  {
          int i;
  
-@@ -658,11 +682,35 @@ void bb_buffer_print(unsigned char * buffer, size_t length, int cmd, int eoi)
+@@ -658,11 +683,35 @@ void bb_buffer_print(unsigned char * buffer, size_t length, int cmd, int eoi)
   *                                                                         *
   ***************************************************************************/
  
@@ -593,7 +597,7 @@ index f1258ca..2f67289 100644
          set_bit(CIC_NUM, &board->status);
          return 0;
  }
-@@ -670,8 +718,7 @@ int bb_take_control(gpib_board_t *board, int synchronous)
+@@ -670,8 +719,7 @@ int bb_take_control(gpib_board_t *board, int synchronous)
  int bb_go_to_standby(gpib_board_t *board)
  {
  	dbg_printk(1,"\n");
@@ -603,7 +607,7 @@ index f1258ca..2f67289 100644
          return 0;
  }
  
-@@ -689,12 +736,16 @@ void bb_request_system_control(gpib_board_t *board, int request_control )
+@@ -689,12 +737,16 @@ void bb_request_system_control(gpib_board_t *board, int request_control )
  
  void bb_interface_clear(gpib_board_t *board, int assert)
  {
@@ -623,7 +627,7 @@ index f1258ca..2f67289 100644
  }
  
  void bb_remote_enable(gpib_board_t *board, int enable)
-@@ -730,13 +781,30 @@ void bb_disable_eos(gpib_board_t *board)
+@@ -730,13 +782,30 @@ void bb_disable_eos(gpib_board_t *board)
  
  unsigned int bb_update_status(gpib_board_t *board, unsigned int clear_mask )
  {
@@ -655,7 +659,7 @@ index f1258ca..2f67289 100644
          dbg_printk(1,"0x%lx mask 0x%x\n",board->status, clear_mask);
  
          return board->status;
-@@ -841,13 +909,13 @@ static void free_private(gpib_board_t *board)
+@@ -841,13 +910,13 @@ static void free_private(gpib_board_t *board)
          }
  }
  
@@ -671,7 +675,7 @@ index f1258ca..2f67289 100644
  	      printk("gpib: can't request IRQ for %s %d\n", name,irq);
  	      return -1;
        }
-@@ -857,7 +925,7 @@ int bb_get_irq(gpib_board_t *board, char * name, int irq,
+@@ -857,7 +926,7 @@ int bb_get_irq(gpib_board_t *board, char * name, int irq,
        return 0;
  }
  
@@ -680,7 +684,7 @@ index f1258ca..2f67289 100644
  {
          struct timespec64 before, after;
  
-@@ -872,7 +940,7 @@ void bb_free_irq(gpib_board_t *board, int *irq, char * name)
+@@ -872,7 +941,7 @@ void bb_free_irq(gpib_board_t *board, int *irq, char * name)
  
  static int allocate_gpios(void) {
          int j;
@@ -689,7 +693,7 @@ index f1258ca..2f67289 100644
          for ( j=0 ; j<last ; j++ ) {
                  if (gpio_request_one (gpios_vector[j], GPIOF_DIR_IN, NULL)) break;
                  all_descriptors[j] = gpio_to_desc (gpios_vector[j]);
-@@ -891,7 +959,7 @@ static int allocate_gpios(void) {
+@@ -891,7 +960,7 @@ static int allocate_gpios(void) {
  }
  
  static void release_gpios(void) {
@@ -698,7 +702,7 @@ index f1258ca..2f67289 100644
          while (j) {
                  if (all_descriptors[--j]) {
                          gpiod_put(all_descriptors[j]);
-@@ -901,6 +969,24 @@ static void release_gpios(void) {
+@@ -901,6 +970,24 @@ static void release_gpios(void) {
          }
  }
  
@@ -723,7 +727,7 @@ index f1258ca..2f67289 100644
  int bb_attach(gpib_board_t *board, const gpib_board_config_t *config)
  {
          bb_private_t *priv;
-@@ -913,19 +999,34 @@ int bb_attach(gpib_board_t *board, const gpib_board_config_t *config)
+@@ -913,19 +1000,34 @@ int bb_attach(gpib_board_t *board, const gpib_board_config_t *config)
          priv = board->private_data;
          priv->direction = -1;
          priv->t1_delay = 2000;
@@ -765,7 +769,7 @@ index f1258ca..2f67289 100644
  
  
          priv->irq_NRFD = gpiod_to_irq(NRFD);
-@@ -939,60 +1040,43 @@ int bb_attach(gpib_board_t *board, const gpib_board_config_t *config)
+@@ -939,60 +1041,43 @@ int bb_attach(gpib_board_t *board, const gpib_board_config_t *config)
          spin_lock_init(&priv->rw_lock);
  
          /* request DAV interrupt for read */
@@ -837,7 +841,7 @@ index f1258ca..2f67289 100644
  }
  
  gpib_interface_t bb_interface =
-@@ -1070,7 +1154,7 @@ static inline int check_for_eos(bb_private_t *priv, uint8_t byte) {
+@@ -1070,7 +1155,7 @@ static inline int check_for_eos(bb_private_t *priv, uint8_t byte) {
          return 0;
  }
  
@@ -846,7 +850,7 @@ index f1258ca..2f67289 100644
  {
          gpiod_direction_output(D01, 1);
          gpiod_direction_output(D02, 1);
-@@ -1082,7 +1166,7 @@ void set_data_lines_output()
+@@ -1082,7 +1167,7 @@ void set_data_lines_output()
          gpiod_direction_output(D08, 1);
  }
  
@@ -855,7 +859,7 @@ index f1258ca..2f67289 100644
  {
          gpiod_set_value(D01, !(byte & 0x01));
          gpiod_set_value(D02, !(byte & 0x02));
-@@ -1094,7 +1178,7 @@ void set_data_lines(uint8_t byte)
+@@ -1094,7 +1179,7 @@ void set_data_lines(uint8_t byte)
          gpiod_set_value(D08, !(byte & 0x80));
  }
  
@@ -864,7 +868,7 @@ index f1258ca..2f67289 100644
  {
          uint8_t ret;
          ret = gpiod_get_value(D01);
-@@ -1108,7 +1192,7 @@ uint8_t get_data_lines(void)
+@@ -1108,7 +1193,7 @@ uint8_t get_data_lines(void)
          return ~ret;
  }
  
@@ -873,7 +877,7 @@ index f1258ca..2f67289 100644
  {
          gpiod_direction_input(D01);
          gpiod_direction_input(D02);
-@@ -1120,7 +1204,7 @@ void set_data_lines_input(void)
+@@ -1120,7 +1205,7 @@ void set_data_lines_input(void)
          gpiod_direction_input(D08);
  }
  
@@ -882,7 +886,7 @@ index f1258ca..2f67289 100644
  {
  	if (priv->direction == DIR_WRITE)
  		return;
-@@ -1142,7 +1226,7 @@ inline void SET_DIR_WRITE(bb_private_t *priv)
+@@ -1142,7 +1227,7 @@ inline void SET_DIR_WRITE(bb_private_t *priv)
          priv->direction = DIR_WRITE;
  }
  
