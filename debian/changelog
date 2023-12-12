@@ -1,3 +1,9 @@
+gpib (4.3.5-lsi5) bookworm; urgency=medium
+
+  * Added fix for changed default installation of path for python3 binaries in bookworm
+
+ -- Vladimir Vassilev <vladimir@lightside-instruments.com>  Mon, 11 Dec 2023 23:14:11 +0000
+
 gpib (4.3.5-lsi4) bullseye; urgency=medium
 
   * Added UDELAYs for data and control signals to settle before DAV is triggered
