@@ -1,3 +1,9 @@
+gpib (4.3.6-lsi8) trixie; urgency=medium
+
+  * Removed libtcl8.6-gpib due to failing compilation
+
+ -- Vladimir Vassilev <vladimir@lightside-instruments.com>  Sun, 09 Nov 2025 16:37:43 +0100
+
 gpib (4.3.6-lsi7) bookworm; urgency=medium
 
   * Fixes driver compilation problem introduced in -lsi6

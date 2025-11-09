@@ -54,8 +54,7 @@ config.status:
 		--mandir=\$${prefix}/share/man \
 		--infodir=\$${prefix}/share/info \
 		--enable-pcmcia \
-		--enable-static \
-		--with-tcl=/usr/lib/tcl8.6/)
+		--enable-static)
 	touch $@
 
 

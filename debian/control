@@ -12,7 +12,6 @@ Build-Depends: debhelper (>= 11),
                doxygen, 
                docbook-utils, 
                docbook-to-man,
-               tcl8.6-dev, 
                perl, 
                python3-all-dev
 Standards-Version: 4.4.1
@@ -67,15 +66,6 @@ Provides: ${python3:Provides}
 Description: Python3 bindings for the GPIB library
  ${Common:Description}
  This package contains the bindings for Python3.
-
-Package: libtcl8.6-gpib
-Section: libs
-Architecture: any
-Depends: ${shlibs:Depends}, 
-         ${misc:Depends}
-Description: Tcl 8.6 bindings for the GPIB library
- ${Common:Description}
- This package contains the bindings for tcl8.6.
 
 Package: libgpib-doc
 Section: doc
